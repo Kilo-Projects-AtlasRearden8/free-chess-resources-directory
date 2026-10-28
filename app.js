@@ -10,6 +10,92 @@
   let resources = [];
   let activeFilter = "all";
 
+  // Embedded mirror of resources.json so the page works standalone
+  // (e.g. opened directly as a file) without needing a server or CORS.
+  const EMBEDDED_RESOURCES = [
+    {
+      "id": "lichess",
+      "name": "Lichess",
+      "category": "Play",
+      "cost": "Free",
+      "platform": "Web, iOS, Android",
+      "steps": "1. Go to https://lichess.org\n2. Play instantly without an account, or sign up for free to save games\n3. Choose a time control (bullet, blitz, rapid, classical) and start a game\n4. Use the Learn menu for puzzles, tactics trainer, and studies",
+      "link": "https://lichess.org"
+    },
+    {
+      "id": "chess-com-free",
+      "name": "Chess.com (free tier)",
+      "category": "Play",
+      "cost": "Free tier",
+      "platform": "Web, iOS, Android",
+      "steps": "1. Go to https://www.chess.com\n2. Create a free account\n3. Play daily games and puzzles within the free daily limits\n4. Explore the free Learn lessons and puzzle rush",
+      "link": "https://www.chess.com"
+    },
+    {
+      "id": "lichess-puzzles",
+      "name": "Lichess Puzzles",
+      "category": "Puzzles",
+      "cost": "Free",
+      "platform": "Web, iOS, Android",
+      "steps": "1. Go to https://lichess.org/puzzle\n2. Solve the tactic shown on the board\n3. Adjust difficulty with the rating filter or try Puzzle Storm for timed practice",
+      "link": "https://lichess.org/puzzle"
+    },
+    {
+      "id": "chess-com-puzzles",
+      "name": "Chess.com Puzzles",
+      "category": "Puzzles",
+      "cost": "Free tier",
+      "platform": "Web, iOS, Android",
+      "steps": "1. Go to https://www.chess.com/puzzles\n2. Solve the daily puzzle and tactic themes\n3. Use free daily puzzle allowance; premium puzzles are optional",
+      "link": "https://www.chess.com/puzzles"
+    },
+    {
+      "id": "lichess-tactics",
+      "name": "Lichess Tactics Trainer",
+      "category": "Tactics trainer",
+      "cost": "Free",
+      "platform": "Web, iOS, Android",
+      "steps": "1. Go to https://lichess.org/training\n2. Select Tactics Trainer\n3. Solve positions adapted to your rating; track progress over time",
+      "link": "https://lichess.org/training"
+    },
+    {
+      "id": "lichess-explorer",
+      "name": "Lichess Opening Explorer",
+      "category": "Opening database",
+      "cost": "Free",
+      "platform": "Web",
+      "steps": "1. Go to https://lichess.org/explorer\n2. Browse openings by move or ECO code\n3. See statistics from millions of Lichess games for each line",
+      "link": "https://lichess.org/explorer"
+    },
+    {
+      "id": "365chess-openings",
+      "name": "365Chess.com Opening Database",
+      "category": "Opening database",
+      "cost": "Free",
+      "platform": "Web",
+      "steps": "1. Go to https://www.365chess.com/opening.php\n2. Search openings by name or ECO code\n3. Browse annotated games and transpose into lines",
+      "link": "https://www.365chess.com/opening.php"
+    },
+    {
+      "id": "lichess-studies",
+      "name": "Lichess Studies (endgame studies)",
+      "category": "Endgame studies",
+      "cost": "Free",
+      "platform": "Web, iOS, Android",
+      "steps": "1. Go to https://lichess.org/study\n2. Browse community-created studies, including endgame studies\n3. Play through positions move by move to learn endgame technique",
+      "link": "https://lichess.org/study"
+    },
+    {
+      "id": "lichess-endgame",
+      "name": "Lichess Endgame Training",
+      "category": "Endgame studies",
+      "cost": "Free",
+      "platform": "Web",
+      "steps": "1. Go to https://lichess.org/practice/endgame\n2. Practice essential endgames (king and pawn, rook endgames, etc.)\n3. Play against the computer from each starting position",
+      "link": "https://lichess.org/practice/endgame"
+    }
+  ];
+
   function escapeHtml(text) {
     const div = document.createElement("div");
     div.textContent = text;
@@ -65,10 +151,15 @@
   }
 
   function loadResources() {
-    return fetch("resources.json")
+    // Prefer the standalone embedded copy so the page works without a server.
+    // If resources.json is served (e.g. over HTTP), use it as the source of truth.
+    resources = EMBEDDED_RESOURCES.slice();
+    filterAndRender();
+
+    fetch("resources.json")
       .then(function (response) {
         if (!response.ok) {
-          throw new Error("Failed to load resources.json");
+          throw new Error("Server copy unavailable");
         }
         return response.json();
       })
@@ -76,9 +167,8 @@
         resources = data;
         filterAndRender();
       })
-      .catch(function (error) {
-        grid.innerHTML = '<p class="error">Unable to load resources: ' + escapeHtml(error.message) + "</p>";
-        console.error(error);
+      .catch(function () {
+        // Keep using the embedded copy; no server required.
       });
   }
 
@@ -95,9 +185,9 @@
     });
   });
 
-  if ("loading" in HTMLImageElement.prototype) {
-    loadResources();
-  } else {
+  if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", loadResources);
+  } else {
+    loadResources();
   }
 })();
