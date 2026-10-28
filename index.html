@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Free Chess Resources Directory</title>
+<meta name="description" content="A beginner-friendly directory of free chess resources: Lichess, Chess.com free tiers, puzzles, tactics trainers, opening databases, and endgame studies.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <h1>Free Chess Resources Directory</h1>
+    <p class="subtitle">Beginner-friendly, free chess resources with client-side search. No affiliate links.</p>
+    <p class="credit">Credit: Asdale Dynamics, LLC &mdash; beginner-friendly AI education, books, guides, and practical tools. <a href="https://dylanasdale.github.io">https://dylanasdale.github.io</a></p>
+  </div>
+</header>
+
+<main class="container">
+  <div class="toolbar">
+    <input type="search" id="search" placeholder="Search resources by name, category, platform&hellip;" aria-label="Search resources">
+    <div class="filters">
+      <button class="filter-btn active" data-filter="all">All</button>
+      <button class="filter-btn" data-filter="Play">Play</button>
+      <button class="filter-btn" data-filter="Puzzles">Puzzles</button>
+      <button class="filter-btn" data-filter="Tactics trainer">Tactics trainer</button>
+      <button class="filter-btn" data-filter="Opening database">Opening database</button>
+      <button class="filter-btn" data-filter="Endgame studies">Endgame studies</button>
+    </div>
+    <span id="count" class="count"></span>
+  </div>
+
+  <div id="grid" class="grid" role="list">
+    <!-- Resource cards injected here by app.js -->
+  </div>
+
+  <div id="empty" class="empty hidden" role="alert">
+    No resources match your search or filter.
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <p>Free Chess Resources Directory &middot; Credit: Asdale Dynamics, LLC &middot; No affiliate links</p>
+    <p>Resources: Lichess &middot; Chess.com free tier &middot; 365Chess.com &mdash; verify current pricing on each official site.</p>
+  </div>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
